@@ -1,0 +1,59 @@
+operatorset Opera {
+  and xfl.min();
+  or xfl.max();
+  defuz xfl.CenterOfArea();
+ }
+
+type Tvelocidad [0.0,60.0;61] {
+  Lento xfl.trapezoid(-1.0,0.0,10.0,30.0);
+  Normal xfl.trapezoid(10.0,30.0,40.0,60.0);
+  Rapido xfl.triangle(40.0,60.0,61.0);
+ }
+
+type Tdistancia [0.0,100.0;101] {
+  Cerca xfl.triangle(-1.0,0.0,30.0);
+  Lejos xfl.triangle(20.0,50.0,80.0);
+  MuyLejos xfl.triangle(70.0,100.0,101.0);
+ }
+
+type Tpaso [0.0,6.0;61] {
+  MuyLento xfl.trapezoid(-1.0,0.0,1.0,2.0);
+  Lento xfl.triangle(1.0,2.0,3.0);
+  Caminar xfl.triangle(2.0,3.0,4.0);
+  Trotar xfl.triangle(3.0,4.0,5.0);
+  Correr xfl.triangle(4.0,5.0,6.0);
+  CorrerMucho xfl.triangle(5.0,6.0,7.0);
+ }
+
+rulebase Base (Tvelocidad Velocidad, Tdistancia Distancia : Tpaso Paso) using Opera {
+if(Velocidad==Lento  & Distancia==Cerca) -> Paso = Caminar;
+if(Velocidad==Lento  & Distancia==Lejos) -> Paso = Lento;
+if(Velocidad==Lento  & Distancia==MuyLejos) -> Paso = MuyLento;
+if(Velocidad==Normal & Distancia==Cerca) -> Paso = Correr;
+if(Velocidad==Normal & Distancia==Lejos) -> Paso = Trotar;
+if(Velocidad==Normal & Distancia==MuyLejos) -> Paso = Caminar;
+if(Velocidad==Rapido & Distancia==Cerca) -> Paso = CorrerMucho;
+if(Velocidad==Rapido & Distancia==Lejos) -> Paso = Correr;
+if(Velocidad==Rapido & Distancia==MuyLejos) -> Paso = Trotar;
+ }
+
+system (Tvelocidad Velocidad, Tdistancia Distancia : Tpaso Paso) {
+Base(Velocidad, Distancia : Paso);
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

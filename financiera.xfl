@@ -1,0 +1,51 @@
+operatorset mamdani {
+   and xfl.min();
+   or xfl.max();
+   defuz xfl.CenterOfArea();
+}
+
+type tingreso [0.0,10000.0;10001] {
+  muybajo xfl.trapezoid(-1666.6666666666667,0.0,1666.6666666666667,3333.3333333333335);
+  bajo xfl.triangle(1666.6666666666667,3333.3333333333335,5000.0);
+  medio xfl.triangle(3333.3333333333335,5000.0,6666.666666666667);
+  alto xfl.triangle(5000.0,6666.666666666667,8333.333333333334);
+  muyalto xfl.trapezoid(6666.666666666666,8333.333333333334,10000.0,11666.666666666666);
+}
+
+type tahorro [0.0,5000.0;5001] {
+  bajo xfl.trapezoid(-1250.0,0.0,1250.0,2500.0);
+  medio xfl.triangle(1250.0,2500.0,3750.0);
+  alto xfl.trapezoid(2500.0,3750.0,5000.0,6250.0);
+}
+
+type tprestamo [0.0,20000.0;20001] {
+  muypequeno xfl.trapezoid(-2500.0,0.0,2500.0,5000.0);
+  pequeno xfl.triangle(2500.0,5000.0,7500.0);
+  pocopequeno xfl.triangle(5000.0,7500.0,10000.0);
+  normail xfl.triangle(7500.0,10000.0,12500.0);
+  pocogrande xfl.triangle(10000.0,12500.0,15000.0);
+  grande xfl.triangle(12500.0,15000.0,17500.0);
+  muygrande xfl.trapezoid(15000.0,17500.0,20000.0,22500.0);
+}
+
+rulebase base (tingreso i, tahorro a : tprestamo p) using mamdani {
+  if(i == muybajo & a == bajo) -> p = muypequeno;
+  if(i == bajo & a == bajo) -> p = pequeno;
+  if(i == medio & a == bajo) -> p = pocopequeno;
+  if(i == alto & a == bajo) -> p = normail;
+  if(i == muyalto & a == bajo) -> p = pocogrande;
+  if(i == muybajo & a == medio) -> p = pequeno;
+  if(i == bajo & a == medio) -> p = pocopequeno;
+  if(i == medio & a == medio) -> p = normail;
+  if(i == alto & a == medio) -> p = pocogrande;
+  if(i == muyalto & a == medio) -> p = grande;
+  if(i == muybajo & a == alto) -> p = pocopequeno;
+  if(i == bajo & a == alto) -> p = normail;
+  if(i == medio & a == alto) -> p = pocogrande;
+  if(i == alto & a == alto) -> p = grande;
+  if(i == muyalto & a == alto) -> p = muygrande;
+}
+
+system (tingreso ingreso, tahorro ahorro : tprestamo prestamo) {
+  base(ingreso, ahorro : prestamo);
+ }

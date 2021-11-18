@@ -1,0 +1,27 @@
+operatorset opera {
+  and xfl.min();
+  or xfl.max();
+  defuz xfl.CenterOfArea();
+ }
+
+type tindice [0.0,9.0;91] {
+  pococrudas xfl.trapezoid(0.0,3.0,4.0,7.0);
+  mediohechas xfl.trapezoid(3.0,5.0,6.0,8.0);
+  doraditas xfl.trapezoid(5.0,7.0,8.0,9.0);
+ }
+
+type ttemperatura [150.0,250.0;101] {
+  baja xfl.trapezoid(150.0,160.0,180.0,190.0);
+  media xfl.trapezoid(170.0,190.0,210.0,230.0);
+  alta xfl.trapezoid(210.0,220.0,240.0,250.0);
+ }
+
+rulebase base (tindice indice : ttemperatura temperatura) using opera {
+if(indice == pococrudas) -> temperatura=media;
+if(indice == mediohechas) -> temperatura=alta;
+if(indice == doraditas) -> temperatura=baja;
+ }
+
+system (tindice indice : ttemperatura temperatura) {
+base(indice : temperatura);
+ }

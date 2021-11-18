@@ -1,0 +1,47 @@
+operatorset opera {
+  and xfl.min();
+  or xfl.max();
+  defuz xfl.CenterOfArea();
+ }
+
+type ttemperatura [-20.0,50.0;71] {
+  congelado xfl.trapezoid(-21.0,-20.0,-10.0,0.0);
+  frio xfl.triangle(-12.0,0.0,10.0);
+  normal xfl.triangle(0.0,10.0,20.0);
+  tibio xfl.triangle(15.0,25.0,35.0);
+  caliente xfl.trapezoid(30.0,45.0,50.0,51.0);
+ }
+
+type thumedad [0.0,100.0;101] {
+  seco xfl.trapezoid(-1.0,0.0,8.0,15.0);
+  humeda xfl.trapezoid(8.0,15.0,50.0,57.0);
+  mojada xfl.trapezoid(40.0,80.0,100.0,101.0);
+ }
+
+type ttiempo [0.0,60.0;61] {
+  corto xfl.trapezoid(-1.0,0.0,8.0,20.0);
+  medio xfl.trapezoid(10.0,25.0,35.0,50.0);
+  prolongado xfl.trapezoid(40.0,55.0,60.0,61.0);
+ }
+
+rulebase base (ttemperatura temperatura, thumedad humedad : ttiempo tiempo) using opera {
+if(temperatura==congelado & humedad==mojada) -> tiempo = corto;
+if(temperatura==frio & humedad==humeda) -> tiempo = medio;
+if(temperatura==normal & humedad==seco) -> tiempo = prolongado;
+if(temperatura==tibio & humedad==mojada) -> tiempo = corto;
+if(temperatura==caliente & humedad==humeda) -> tiempo = medio;
+if(temperatura==congelado & humedad==seco) -> tiempo = prolongado;
+if(temperatura==frio & humedad==mojada) -> tiempo = corto;
+if(temperatura==normal & humedad==humeda) -> tiempo = medio;
+if(temperatura==tibio & humedad==seco) -> tiempo = prolongado;
+if(temperatura==caliente & humedad==mojada) -> tiempo = corto;
+if(temperatura==congelado & humedad==humeda) -> tiempo = corto;
+if(temperatura==frio & humedad==seco) -> tiempo = prolongado;
+if(temperatura==normal & humedad==mojada) -> tiempo = corto;
+if(temperatura==tibio & humedad==humeda) -> tiempo = medio;
+if(temperatura==caliente & humedad==seco) -> tiempo = prolongado;
+ }
+
+system (ttemperatura temperatura, thumedad humedad : ttiempo tiempo) {
+base(temperatura, humedad : tiempo);
+ }

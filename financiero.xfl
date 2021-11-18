@@ -1,0 +1,51 @@
+operatorset Mandani {
+   and xfl.min();
+   or xfl.max();
+   defuz xfl.CenterOfArea();
+}
+
+type TIngreso [0.0,10000.0;10001] {
+  muy_bajo xfl.trapezoid(-1666.6666666666667,0.0,1666.6666666666667,3333.3333333333335);
+  bajo xfl.triangle(1666.6666666666667,3333.3333333333335,5000.0);
+  medio xfl.triangle(3333.3333333333335,5000.0,6666.666666666667);
+  alto xfl.triangle(5000.0,6666.666666666667,8333.333333333334);
+  muy_alto xfl.trapezoid(6666.666666666666,8333.333333333334,10000.0,11666.666666666666);
+}
+
+type TAhorro [0.0,10000.0;10001] {
+  bajo xfl.trapezoid(-2500.0,0.0,2500.0,5000.0);
+  medio xfl.triangle(2500.0,5000.0,7500.0);
+  alto xfl.trapezoid(5000.0,7500.0,10000.0,12500.0);
+}
+
+type TPrestamo [25000.0,250000.0;225001] {
+  muy_pqueno xfl.trapezoid(-3125.0,25000.0,53125.0,81250.0);
+  pequeno xfl.triangle(53125.0,81250.0,109375.0);
+  poco_pequeno xfl.triangle(81250.0,109375.0,137500.0);
+  normal xfl.triangle(109375.0,137500.0,165625.0);
+  poco_grande xfl.triangle(137500.0,165625.0,193750.0);
+  grande xfl.triangle(165625.0,193750.0,221875.0);
+  muy_grande xfl.trapezoid(193750.0,221875.0,250000.0,278125.0);
+}
+
+rulebase base (TIngreso i, TAhorro a : TPrestamo p) using Mandani {
+  if(i == muy_bajo & a == bajo) -> p = muy_pqueno;
+  if(i == muy_bajo & a == medio) -> p = pequeno;
+  if(i == muy_bajo & a == alto) -> p = poco_pequeno;
+  if(i == bajo & a == bajo) -> p = pequeno;
+  if(i == bajo & a == medio) -> p = poco_pequeno;
+  if(i == bajo & a == alto) -> p = normal;
+  if(i == medio & a == bajo) -> p = poco_pequeno;
+  if(i == medio & a == medio) -> p = normal;
+  if(i == medio & a == alto) -> p = poco_grande;
+  if(i == alto & a == bajo) -> p = normal;
+  if(i == alto & a == medio) -> p = poco_grande;
+  if(i == alto & a == alto) -> p = grande;
+  if(i == muy_alto & a == bajo) -> p = poco_grande;
+  if(i == muy_alto & a == medio) -> p = grande;
+  if(i == muy_alto & a == alto) -> p = muy_grande;
+}
+
+system (TIngreso ingreso, TAhorro ahorro : TPrestamo prestamo) {
+  base(ingreso, ahorro : prestamo);
+ }
